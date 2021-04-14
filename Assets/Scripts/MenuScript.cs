@@ -46,6 +46,7 @@ public class MenuScript : MonoBehaviour
         {
             NetworkManager.Singleton.GetComponent<UNetTransport>().ConnectAddress = inputField.text;
         }
+        Debug.Log($"Connection Address: {NetworkManager.Singleton.GetComponent<UNetTransport>().ConnectAddress}");
         NetworkManager.Singleton.NetworkConfig.ConnectionData = System.Text.Encoding.ASCII.GetBytes("mygame");
         NetworkManager.Singleton.StartClient();
         menuPanel.SetActive(false);
