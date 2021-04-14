@@ -11,14 +11,15 @@ public class PlayerMovement : NetworkBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        cc = GetComponent<CharacterController>();
+
         if (!IsLocalPlayer)
         {
             cameraTransform.GetComponent<AudioListener>().enabled = false;
             cameraTransform.GetComponent<Camera>().enabled = false;
         }
         else
-        {
-            cc = GetComponent<CharacterController>();
+        { 
             Cursor.lockState = CursorLockMode.Locked;
         }
         
@@ -28,11 +29,16 @@ public class PlayerMovement : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (IsLocalPlayer)
+        if (cc.enabled)
         {
-            MovePlayer();
-            Look();
+            if (IsLocalPlayer)
+            {
+                MovePlayer();
+                Look();
+            }
+
         }
+        
         
     }
 
