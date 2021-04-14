@@ -14,6 +14,7 @@ public class PlayerShooting : NetworkBehaviour
     //bool shooting = false;
     float fireRate = 10f;
     float shootTimer = 0f;
+    public AudioSource roar;
 
 
     // Start is called before the first frame update
@@ -29,10 +30,22 @@ public class PlayerShooting : NetworkBehaviour
         {
             shooting.Value = Input.GetMouseButton(0);
             shootTimer += Time.deltaTime;
-            if(shooting.Value && shootTimer >= 1f / fireRate)
+            if (shooting.Value && shootTimer >= 1f / fireRate)
             {
                 shootTimer = 0;
                 ShootServerRpc();
+                
+            }
+
+
+            if (shooting.Value) {
+                if (!roar.isPlaying)
+                {
+                    roar.Play();
+                }
+            }
+            else {
+                roar.Stop();
             }
         }
         
