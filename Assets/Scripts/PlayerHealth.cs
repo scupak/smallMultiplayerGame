@@ -4,9 +4,13 @@ using UnityEngine;
 using MLAPI;
 using MLAPI.NetworkVariable;
 using MLAPI.Messaging;
+using System;
+using Random = UnityEngine.Random;
+using UnityEngine.UI;
 
 public class PlayerHealth : NetworkBehaviour
 {
+    public Text scoreText;
     public NetworkVariableFloat health = new NetworkVariableFloat(new NetworkVariableSettings { WritePermission = NetworkVariablePermission.ServerOnly }, 100f);
     MeshRenderer[] renderers;
     CharacterController cc;
@@ -19,7 +23,7 @@ public class PlayerHealth : NetworkBehaviour
     }
 
     //running on the server
-    public void TakeDamage(float damage)
+    public bool TakeDamage(float damage)
     {
         health.Value -= damage;
         //check health
@@ -31,7 +35,14 @@ public class PlayerHealth : NetworkBehaviour
             //respawn
             Vector3 pos = new Vector3(Random.Range(-10, 10), 4, Random.Range(-10, 10));
             ClientRespawnClientRpc(pos);
+            return true;
+
+
+
         }
+        return false;
+
+
     }
 
     [ClientRpc]
@@ -57,5 +68,12 @@ public class PlayerHealth : NetworkBehaviour
             renderer.enabled = true;
         }
 
+    }
+
+    public void lose()
+    {
+        scoreText.text = "you loose";
+        scoreText.fontSize = 15;
+        Time.timeScale = 0;
     }
 }

@@ -4,13 +4,16 @@ using UnityEngine;
 using MLAPI;
 using MLAPI.NetworkVariable;
 using MLAPI.Messaging;
+using UnityEngine.UI;
 
 public class PlayerShooting : NetworkBehaviour
 {
+    public Text scoreText;
     public ParticleSystem bulletParticleSystem;
     private ParticleSystem.EmissionModule em;
 
     NetworkVariableBool shooting = new NetworkVariableBool(new NetworkVariableSettings { WritePermission = NetworkVariablePermission.OwnerOnly }, false);
+    public NetworkVariableFloat score = new NetworkVariableFloat(new NetworkVariableSettings { WritePermission = NetworkVariablePermission.ServerOnly }, 0f);
     //bool shooting = false;
     float fireRate = 10f;
     float shootTimer = 0f;
@@ -28,6 +31,22 @@ public class PlayerShooting : NetworkBehaviour
     {
         if (IsLocalPlayer)
         {
+            if (score.Value >= 5){
+                scoreText.text = "you win";
+                scoreText.fontSize = 15;
+
+                Time.timeScale = 0;
+
+            }
+            else if (scoreText.text == "you loose")
+            {
+
+            }
+            else
+            { 
+                scoreText.text = score.Value.ToString();
+            }
+
             shooting.Value = Input.GetMouseButton(0);
             shootTimer += Time.deltaTime;
             if (shooting.Value && shootTimer >= 1f / fireRate)
@@ -63,7 +82,18 @@ public class PlayerShooting : NetworkBehaviour
             if (player != null)
             {
                 //we hit a player
-                player.TakeDamage(10f);
+                if (player.TakeDamage(10f))
+                {
+                    score.Value++;
+
+                    if (score.Value >= 5)
+                    {
+                        player.lose();
+
+
+                    }
+
+                }
             }
         }
     }
